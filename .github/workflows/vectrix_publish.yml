@@ -1,0 +1,20 @@
+name: Vectrix Publish
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Gradle Setup
+        uses: gradle/actions/setup-gradle@v4
+      - name: Publish package
+        run: ./gradlew --no-build-cache -Pversion=${{ github.event.release.tag_name }} -Pgpr.user=${{ secrets.PUBLISHER }} -Pgpr.key=${{ secrets.PUBLISH_TOKEN }} build publish 
